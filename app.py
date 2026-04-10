@@ -219,4 +219,9 @@ def fig_to_img(fig):
     return send_file(img, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # O Render define a porta automaticamente. Se não encontrar, usa a 5000 por padrão.
+    port = int(os.environ.get("PORT", 5000))
+    
+    # host='0.0.0.0' é o segredo para o app aceitar conexões externas
+    # debug=False é o recomendado para produção (segurança e performance)
+    app.run(host='0.0.0.0', port=port, debug=False)
