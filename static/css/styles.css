@@ -572,67 +572,80 @@ body.light-mode .contact-card:hover {
     background: rgba(255,255,255,0.03);
 }
 
-/* --- RESPONSIVIDADE (Celulares) --- */
+/* --- CSS MOBILE COM ALTURA REDUZIDA (75%) --- */
 @media (max-width: 768px) {
+    /* 1. Ajuste da altura do container principal */
     .container {
-        width: 100vw;
-        height: auto; /* Permite que o conteúdo estique a página */
-        min-height: 100vh;
-        border-radius: 0;
-        overflow-y: auto; /* Habilita scroll vertical */
+        display: block !important; 
+        width: 100vw !important;
+        height: 75vh !important; /* Limita a 75% da altura da tela */
+        min-height: 75vh !important;
+        border-radius: 0 0 15px 15px; /* Arredonda só a base para um visual moderno */
+        overflow-y: auto !important; /* Garante scroll dentro do container */
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* Empilha o texto e o gráfico */
-    .content {
-        flex-direction: column; 
-        padding: 10px;
-        gap: 15px;
-    }
-
-    .text, .visual {
-        flex: none;
-        width: 100%; /* Ocupam a largura total */
-        height: auto;
-        min-height: 300px;
-    }
-
-    /* Esconde o console em telas muito pequenas para ganhar espaço */
-    .terminal-console {
-        height: 80px;
-        font-size: 0.65rem;
-    }
-}
-
-@media (max-width: 768px) {
+    /* 2. Menu Horizontal no Topo */
     .nav-menu {
-        position: relative; /* Sai do canto e entra no fluxo */
+        position: sticky !important; /* Gruda no topo do container ao rolar */
         top: 0;
         left: 0;
-        flex-direction: row; /* Botões um ao lado do outro */
-        width: 100%;
-        overflow-x: auto; /* Scroll lateral se houver muitos botões */
-        padding: 10px;
-        background: var(--glass);
-        white-space: nowrap; /* Impede os botões de quebrarem linha */
+        flex-direction: row !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        padding: 12px !important;
+        background: rgba(30, 30, 30, 0.95) !important;
+        gap: 8px;
+        white-space: nowrap;
+        z-index: 1000;
+        border-bottom: 1px solid var(--accent);
     }
 
     .nav-btn {
-        width: auto; /* Deixa o botão do tamanho do texto */
-        padding: 8px 12px;
-        font-size: 0.8rem;
-    }
-    
-    .theme-toggle {
-        position: fixed; /* Mantém o botão de tema acessível */
-        bottom: 20px;
-        right: 20px;
-        top: auto;
+        width: auto !important;
+        min-width: 100px;
+        font-size: 0.7rem;
+        padding: 8px;
     }
 
+    /* 3. Empilhamento do Conteúdo */
+    .content {
+        flex-direction: column !important;
+        padding: 10px !important;
+        gap: 15px;
+        height: auto !important;
+    }
+
+    /* 4. Ajuste dos Quadros (Texto e Gráfico) */
+    .text, .visual {
+        flex: none !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 250px; /* Reduzi um pouco para caber melhor nos 75% */
+    }
+
+    /* 5. Imagens e Tabelas */
+    .chart-img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 300px; /* Limita a altura do gráfico para não estourar o container */
+    }
+
+    .visual > div {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    /* 6. Título e Console */
     .title {
-        font-size: 1.3rem;
-        margin: 10px 0;
+        font-size: 1.1rem !important;
         text-align: center;
+        margin: 5px 0 !important;
+    }
+
+    .terminal-console {
+        display: none; /* Mantemos oculto para priorizar o gráfico no espaço de 75% */
     }
 }
 
