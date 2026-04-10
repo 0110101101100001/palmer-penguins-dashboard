@@ -198,6 +198,54 @@
                 </div>
             </div>
 
+            <div id="view-contato" class="slide">
+    <div class="header">
+        <img src="/static/img/pinc.png" id="logo-img-contato" class="pin-logo" alt="Logo Penguin">
+        <h1 class="title">Sistemas Finalizados // Contato</h1>
+    </div>
+
+    <div class="content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 40px;">
+        
+        <div class="profile-header">
+            <h2 style="color: var(--purple); font-family: 'JetBrains Mono'; font-size: 2.2rem; margin-bottom: 5px;">Kaíque Nunes</h2>
+            <p style="color: var(--cyan); font-family: 'JetBrains Mono'; font-size: 1.1rem;">Estudante de Ciência de Dados | Desenvolvedor</p>
+        </div>
+
+        <div class="contact-grid">
+            <a href="https://www.linkedin.com/in/kaique-nunes-vasconcelos-fraga-580867286/" target="_blank" class="contact-card">
+                <div class="card-icon" style="color: #0077b5;">🔗</div>
+                <div class="card-info">
+                    <h4>LinkedIn</h4>
+                    <p>Conectar na Rede</p>
+                </div>
+            </a>
+
+            <a href="https://github.com/0110101101100001" target="_blank" class="contact-card">
+                <div class="card-icon" style="color: var(--foreground);">💻</div>
+                <div class="card-info">
+                    <h4>GitHub</h4>
+                    <p>Ver Repositórios</p>
+                </div>
+            </a>
+
+            <a href="mailto:kaiquenvf@gmail.com" class="contact-card">
+                <div class="card-icon" style="color: var(--red);">✉️</div>
+                <div class="card-info">
+                    <h4>E-mail</h4>
+                    <p>Enviar Mensagem</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer-note" style="border-top: 1px solid var(--border-color); padding-top: 20px; width: 60%;">
+            <p style="font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--comment);">
+                [STATUS]: Sistema operacional estável. Pronto para novas implementações.
+            </p>
+        </div>
+    </div>
+</div>
+
+
             <div id="console" class="terminal-console">
                 <div class="log-system">[SYSTEM] Console inicializado... OK</div>
             </div>
@@ -261,20 +309,32 @@
     </div>
 </div>
 
-        <div id="view-limpeza" style="display:none; flex:1; flex-direction:column; padding:40px; justify-content:center; align-items:center;">
-            <div class="form-ui" style="max-width: 600px; width:100%; border: 2px dashed var(--green);">
-                <h2 style="color: var(--green); margin-top:0;">⚡ Sanitização de CSV</h2>
-                <p>Suba qualquer dataset bruto e o motor irá remover automaticamente todas as linhas com valores nulos (NaN).</p>
-                <form action="/limpar-dataset" method="post" enctype="multipart/form-data" style="margin-top:30px;">
-                    <input type="file" name="file" accept=".csv" id="file-csv" style="display:none;" onchange="document.getElementById('file-info').innerText = 'Pronto: ' + this.files[0].name">
-                    <label for="file-csv" class="btn-main" style="display:block; text-align:center; margin-bottom:10px; cursor:pointer;">
-                        📂 Selecionar Arquivo .CSV
-                    </label>
-                    <div id="file-info" style="font-size:12px; color:var(--cyan); margin-bottom:20px; text-align:center;">Aguardando arquivo...</div>
-                    <button type="submit" class="btn-main" style="background:var(--green); color:#282a36; width:100%;">Executar Limpeza e Baixar</button>
-                </form>
+        <div id="view-limpeza" style="display:none; flex:1; flex-direction:column; padding:20px; overflow-y: auto;">
+    <div class="header">
+        <h1 class="title">Processamento de Dados</h1>
+    </div>
+
+    <div class="content">
+        <div class="form-ui" style="border: 2px dashed var(--green); padding: 30px; text-align: center; width: 100%;">
+            <h2 style="color: var(--green); margin-top: 0;">⚡ Sanitização de CSV</h2>
+            <p>Suba o dataset bruto e o sistema removerá valores nulos (NaN) automaticamente.</p>
+
+            <div style="margin: 20px 0;">
+                <label for="csv_file" class="nav-btn" style="display: inline-block; width: auto; cursor: pointer; text-align: center;">
+                    # 📁 SELECIONAR ARQUIVO .CSV [v1.1]
+                </label>
+                <input type="file" id="csv_file" accept=".csv" style="display: none;" 
+                       onchange="addLog('Arquivo carregado: ' + this.files[0].name, 'info'); document.getElementById('file-name-display').innerText = this.files[0].name;">
+                
+                <p id="file-name-display" style="font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--comment); margin-top: 10px;">
+                    Aguardando arquivo...
+                </p>
             </div>
+
+            <button class="btn-main" onclick="executarLimpeza()">Executar Limpeza e Baixar</button>
         </div>
+    </div>
+</div>
 
         <div id="view-dinamico" style="display:none; flex:1; flex-direction:column; padding:20px; overflow: hidden;">
             <div class="header"><h1 class="title">Analisador Dinâmico</h1></div>
@@ -323,13 +383,17 @@
         const consoleElem = document.getElementById('console');
 
         function addLog(message, type = 'info') {
-            const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
-            const logDiv = document.createElement('div');
-            logDiv.className = `log-${type}`;
-            logDiv.innerHTML = `<span style="color: #6272a4;">${time}</span> [${type.toUpperCase()}] ${message}`;
-            consoleElem.appendChild(logDiv);
-            consoleElem.scrollTop = consoleElem.scrollHeight;
-        }
+    const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+    const logDiv = document.createElement('div');
+    logDiv.className = `log-${type}`;
+    
+    // Adiciona um prefixo de console estilo Linux
+    const prefix = `<span style="color: #6272a4;">${time}</span> <span style="color: var(--pink);">[kaique@antartica ~]$</span> `;
+    
+    logDiv.innerHTML = `${prefix} [${type.toUpperCase()}] ${message}`;
+    consoleElem.appendChild(logDiv);
+    consoleElem.scrollTop = consoleElem.scrollHeight;
+}
 
         function tab(t) {
     // 1. Adiciona 'view-wiki' na lista
@@ -414,6 +478,41 @@
             document.getElementById('res').innerHTML = `Resultado: ${d.especie}<br><small>${d.explica}</small>`;
             addLog(`IA Predição: ${d.especie}`, 'model');
         }
+
+        window.onload = () => {
+    // 1. Sequência de Boot (Mensagens iniciais no terminal)
+    const bootSequence = [
+        { msg: "Iniciando Kernel PalmerOS v1.5...", type: "system" },
+        { msg: "Carregando módulos de Data Science (Pandas, Scikit-Learn)...", type: "info" },
+        { msg: "Conectando ao dataset: palmer_penguins_raw.csv", type: "info" },
+        { msg: "Dataset carregado: 344 registros encontrados.", type: "info" },
+        { msg: "Motor de Inferência IA pronto para predição.", type: "model" },
+        { msg: "Sistema pronto. Aguardando comando do usuário...", type: "system" }
+    ];
+
+    bootSequence.forEach((item, index) => {
+        setTimeout(() => {
+            addLog(item.msg, item.type);
+        }, index * 600); // Aparece uma mensagem a cada 600ms
+    });
+
+    // 2. Interatividade dos Inputs (Logs disparados ao clicar nos campos)
+    const inputF = document.getElementById('f');
+    const inputB = document.getElementById('b');
+
+    // Verificamos se os IDs 'f' e 'b' existem no HTML antes de aplicar o listener
+    if (inputF) {
+        inputF.addEventListener('focus', () => 
+            addLog("Aguardando entrada: Flipper Length (mm)", "info")
+        );
+    }
+    
+    if (inputB) {
+        inputB.addEventListener('focus', () => 
+            addLog("Aguardando entrada: Bill Length (mm)", "info")
+        );
+    }
+};
     </script>
 </body>
 </html>

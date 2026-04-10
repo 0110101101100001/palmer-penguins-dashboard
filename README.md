@@ -46,12 +46,14 @@ O **DataLens Dashboard** é um ecossistema completo de análise e predição bas
 4. **Acesse no navegador:**
    http://127.0.0.1:5000
 
-## 👤 Autor
+👤 Autor
 
-**Kaíque Nunes** *Estudante de Ciência de Dados & Desenvolvedor*
+Kaíque Nunes Estudante de Ciência de Dados & Desenvolvedor.
 
-* **LinkedIn:** [Conectar](https://www.linkedin.com/in/kaique-nunes-vasconcelos-fraga-580867286/)
-* **GitHub:** [@0110101101100001](https://github.com/0110101101100001)
-* **E-mail:** [kaiquenvf@gmail.com](mailto:kaiquenvf@gmail.com)
+    LinkedIn: Conectar
+
+    GitHub: 0110101101100001
+
+    E-mail: kaiquenvf@gmail.com
 
 Este projeto foi desenvolvido como parte de estudos acadêmicos em Ciência de Dados e Desenvolvimento Web.

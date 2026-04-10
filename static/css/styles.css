@@ -115,6 +115,18 @@ body {
     box-shadow: 0 0 15px var(--accent); 
 }
 
+.nav-btn:hover {
+    background: rgba(189, 147, 249, 0.1);
+    border-color: var(--pink);
+    color: var(--pink);
+    text-shadow: 0 0 8px var(--pink);
+}
+
+.nav-btn.active {
+    box-shadow: 0 0 20px rgba(189, 147, 249, 0.4); /* Brilho externo */
+    transform: translateX(5px); /* Pequeno deslocamento lateral */
+}
+
 .theme-toggle { 
     position: absolute; 
     top: 20px; 
@@ -230,11 +242,12 @@ body {
     width: 100%; 
 }
 
-.card { 
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--border-color);
-    padding: 20px;
-    border-radius: 4px;
+.card, .form-ui, .text {
+    background: var(--glass) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .card h4 { color: var(--orange); margin: 0 0 10px 0; font-family: 'JetBrains Mono', monospace; }
@@ -250,6 +263,15 @@ body {
     border-top: 2px solid #44475a;
     font-size: 0.75rem;
     width: 100%;
+}
+
+.terminal-console div:last-child::after {
+    content: "_";
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
 }
 
 .log-info { color: #8be9fd; }
@@ -441,3 +463,112 @@ body.light-mode #sel-metrica:hover {
     border-color: #bd93f9 !important;
     background-color: #f8f9fa !important;
 }
+
+/* Estilo para navegadores Webkit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--current-line);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--comment);
+}
+
+/* --- SLIDE DE CONTATO / PORTFÓLIO --- */
+
+.contact-grid {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    justify-content: center;
+}
+
+.contact-card {
+    flex: 1;
+    background: var(--glass) !important;
+    border: 1px solid var(--border-color);
+    padding: 25px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(10px);
+}
+
+.contact-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    background: rgba(189, 147, 249, 0.1) !important;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+}
+
+.card-info h4 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.card-info p {
+    margin: 5px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--comment);
+}
+
+/* Ajuste do Tema Claro no Portfólio */
+body.light-mode .contact-card {
+    background: #ffffff !important;
+    border: 1px solid #d1d9e6 !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+body.light-mode .contact-card:hover {
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+    background: #f8f9fa !important;
+}
+
+/* Estilização Profissional para Tabelas Pandas */
+.dataframe {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--foreground);
+    background: rgba(0,0,0,0.2);
+}
+
+.dataframe th {
+    background: var(--current-line);
+    color: var(--purple);
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid var(--purple);
+}
+
+.dataframe td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.dataframe tr:hover {
+    background: rgba(255,255,255,0.03);
+}
+
