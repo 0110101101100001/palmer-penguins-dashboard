@@ -573,80 +573,103 @@ body.light-mode .contact-card:hover {
 }
 
 /* --- CSS MOBILE COM ALTURA REDUZIDA (75%) --- */
+/* --- INTERFACE MOBILE PROFISSIONAL (RETRÁTIL) --- */
 @media (max-width: 768px) {
-    /* 1. Ajuste da altura do container principal */
+    /* 1. Altura do Container: Aumentada para 85% para caber os botões de slides */
     .container {
-        display: block !important; 
         width: 100vw !important;
-        height: 75vh !important; /* Limita a 75% da altura da tela */
-        min-height: 75vh !important;
-        border-radius: 0 0 15px 15px; /* Arredonda só a base para um visual moderno */
-        overflow-y: auto !important; /* Garante scroll dentro do container */
+        height: 85vh !important; 
+        min-height: 85vh !important;
+        border-radius: 0;
+        display: block !important;
+        overflow-y: auto;
         position: relative;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        z-index: 5;
     }
 
-    /* 2. Menu Horizontal no Topo */
+    /* 2. Menu Lateral Retrátil (Escondido à esquerda por padrão) */
     .nav-menu {
-        position: sticky !important; /* Gruda no topo do container ao rolar */
+        position: fixed !important;
         top: 0;
         left: 0;
-        flex-direction: row !important;
-        width: 100% !important;
-        overflow-x: auto !important;
-        padding: 12px !important;
-        background: rgba(30, 30, 30, 0.95) !important;
-        gap: 8px;
-        white-space: nowrap;
-        z-index: 1000;
-        border-bottom: 1px solid var(--accent);
+        height: 100vh !important;
+        width: 260px !important;
+        background: rgba(40, 42, 54, 0.95) !important; /* Tema Dracula Sólido */
+        flex-direction: column !important;
+        padding: 80px 20px 20px 20px !important; /* Espaço para o botão fechar */
+        z-index: 2000 !important;
+        
+        /* Animação: Começa fora da tela na esquerda */
+        transform: translateX(-100%); 
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        border-right: 1px solid var(--accent);
+    }
+
+    /* Classe que o JS vai adicionar para mostrar o menu */
+    .nav-menu.active {
+        transform: translateX(0);
     }
 
     .nav-btn {
-        width: auto !important;
-        min-width: 100px;
-        font-size: 0.7rem;
-        padding: 8px;
+        width: 100% !important;
+        margin-bottom: 10px;
+        text-align: left;
     }
 
-    /* 3. Empilhamento do Conteúdo */
+    /* 3. Botão de Abrir Menu */
+    .mobile-menu-btn {
+        display: block !important;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 2100;
+        background: var(--accent);
+        color: var(--bg-dark);
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: bold;
+    }
+
+    /* 4. Overlay com Efeito de Blur (Desfoque) */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px); /* O SEGREDO DO BLUR */
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 1500;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .overlay.active {
+        display: block;
+        opacity: 1;
+    }
+
+    /* 5. Ajuste dos Slides e Conteúdo */
     .content {
         flex-direction: column !important;
-        padding: 10px !important;
-        gap: 15px;
-        height: auto !important;
+        padding: 15px !important;
+        gap: 20px;
     }
 
-    /* 4. Ajuste dos Quadros (Texto e Gráfico) */
-    .text, .visual {
-        flex: none !important;
+    .visual, .text {
         width: 100% !important;
-        height: auto !important;
-        min-height: 250px; /* Reduzi um pouco para caber melhor nos 75% */
+        min-height: 300px;
     }
 
-    /* 5. Imagens e Tabelas */
-    .chart-img {
-        width: 100% !important;
-        height: auto !important;
-        max-height: 300px; /* Limita a altura do gráfico para não estourar o container */
-    }
+    /* Esconde o botão de tema padrão para não poluir (colocamos dentro do menu se quiser) */
+    .theme-toggle { top: 15px; right: 15px; }
+}
 
-    .visual > div {
-        overflow-x: auto;
-        width: 100%;
-    }
-
-    /* 6. Título e Console */
-    .title {
-        font-size: 1.1rem !important;
-        text-align: center;
-        margin: 5px 0 !important;
-    }
-
-    .terminal-console {
-        display: none; /* Mantemos oculto para priorizar o gráfico no espaço de 75% */
-    }
+/* Garante que o botão de menu suma no Desktop */
+@media (min-width: 769px) {
+    .mobile-menu-btn { display: none !important; }
 }
 
 .visual > div {

@@ -45,6 +45,10 @@
 
     <button class="theme-toggle" onclick="toggleTheme()">🌓 Alternar Tema</button>
 
+    <button id="menu-toggle" class="mobile-menu-btn" onclick="toggleSidebar()">☰ Menu</button>
+
+    <div id="menu-overlay" class="overlay" onclick="toggleSidebar()"></div>
+
     <div class="nav-menu">
         <button id="nHome" class="nav-btn active" onclick="tab('home')">🏠 Início</button>
         <button id="nWiki" class="nav-btn" onclick="tab('wiki')">📝 Dicionário</button>
@@ -514,6 +518,27 @@
         );
     }
 };
+
+    function toggleSidebar() {
+    const menu = document.querySelector('.nav-menu');
+    const overlay = document.getElementById('menu-overlay');
+    
+    // Adiciona ou remove a classe 'active' para disparar a animação
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Log no seu console de terminal estilo hacker
+    const isOpen = menu.classList.contains('active');
+    addLog(`Menu Lateral: ${isOpen ? 'ABERTO' : 'FECHADO'}`, 'system');
+}
+
+// Opcional: Fechar o menu automaticamente ao clicar em uma opção
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if(window.innerWidth <= 768) toggleSidebar();
+    });
+});
+
     </script>
 </body>
 </html>
