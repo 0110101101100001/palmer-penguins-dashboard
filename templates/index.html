@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Palmer Penguins | Dashboard de Ciência de Dados</title>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        .terminal-console {
+            background: #1e1e1e;
+            color: #50fa7b;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 10px 15px;
+            height: 100px;
+            overflow-y: auto;
+            border-top: 2px solid #44475a;
+            font-size: 12px;
+            width: 100%;
+            margin-top: auto;
+        }
+        .log-info { color: #8be9fd; }
+        .log-model { color: #ff79c6; }
+        .log-system { color: #bd93f9; }
+
+        body.light-mode p, body.light-mode h1, body.light-mode h2, body.light-mode h3,
+        body.light-mode .text p, body.light-mode .table-data td {
+            color: #000000 !important;
+        }
+
+        .nav-menu { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            z-index: 100; 
+        }
+        .nav-btn { width: 160px; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Alternar Tema</button>
+
+    <div class="nav-menu">
+        <button id="nHome" class="nav-btn active" onclick="tab('home')">🏠 Início</button>
+        <button id="nWiki" class="nav-btn" onclick="tab('wiki')">📝 Dicionário</button>
+        <button id="nS" class="nav-btn" onclick="tab('slides')">📊 Tour Projeto</button>
+        <button id="nL" class="nav-btn" onclick="tab('limpeza')">✨ Limpar Dados</button>
+        <button id="nD" class="nav-btn" onclick="tab('dinamico')">⚙️ Analisador</button>
+        <button id="nP" class="nav-btn" onclick="tab('predict')">🤖 Predição</button>
+    </div>
+
+    <div class="container">
+        <div id="slides-wrapper" style="display:none; flex:1; flex-direction:column; overflow: hidden;">
+            <div class="slide active">
+    <div class="header">
+        <img src="/static/img/pinc.png" id="logo-img" class="pin-logo" alt="Logo Penguin">
+        <h1 class="title">Expedição Palmer Penguins</h1>
+    </div>
+    
+    <div class="content" style="display: flex; gap: 20px; flex: 1; align-items: center; padding: 20px 0;">
+        
+        <div class="text" style="flex: 1; text-align: left; border-left: 4px solid var(--pink); padding-left: 20px;">
+            <h2 style="font-size: 42px; color: var(--pink); margin: 0 0 10px 0; line-height: 1.1;">
+                Ciência de Dados na Antártica
+            </h2>
+            <p style="color: var(--cyan); font-size: 18px; margin: 0 0 20px 0; font-family: 'JetBrains Mono';">
+                Pipeline de Analytics | Por Kaíque Nunes
+            </p>
+            <p style="font-size: 14px; line-height: 1.6; color: var(--foreground); max-width: 400px;">
+                Bem-vindo à análise exploratória e preditiva do dataset Palmer Penguins. 
+                Nesta jornada, exploraremos dados coletados em três ilhas icônicas do Arquipélago Palmer, 
+                utilizando IA para entender e classificar estas espécies fascinantes.
+            </p>
+        </div>
+
+        <div class="visual" style="flex:1.6; background: #1e1e1e; border: 1px solid var(--border-color); position: relative;">
+    <iframe 
+        width="100%" 
+        height="100%" 
+        frameborder="0" 
+        style="border:0; filter: invert(90%) hue-rotate(180deg) brightness(0.8);" 
+        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d100000!2d-64.05!3d-64.77!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spt-BR!2sbr!4v123456789" 
+        allowfullscreen>
+    </iframe>
+</div>
+    </div>
+</div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">1. Ingestão e Pré-visualização</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Amostragem do Dataset</h3>
+                        <p>Visualização das primeiras entradas do conjunto de dados <strong>Palmer Penguins</strong>.</p>
+                        <button class="btn-main" onclick="location.href='/download'" style="margin-top: 20px;">📥 Exportar CSV</button>
+                    </div>
+                    <div class="visual"><div style="overflow:auto; width:100%; height:100%;">{{ preview_table|safe }}</div></div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">2. Análise Estatística Descritiva</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Distribuição de Variáveis</h3>
+                        <p>Análise estatística das <strong>features quantitativas</strong>.</p>
+                    </div>
+                    <div class="visual"><div style="width:100%; height:100%; overflow:auto;">{{ stats_table|safe }}</div></div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">3. Auditoria de Qualidade</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Identificação de Missing Values</h3>
+                        <p>Varredura de valores ausentes (NaN) no arquivo bruto.</p>
+                        <div style="margin-top: 10px; border-left: 3px solid var(--red); padding-left: 10px;">
+                            <small style="color: var(--red); font-family: 'JetBrains Mono';">[!] Inconsistências detectadas.</small>
+                        </div>
+                    </div>
+                    <div class="visual"><div style="width: 85%; overflow: auto;">{{ null_before|safe }}</div></div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">4. Sanitização de Dados</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Pós-Processamento de Nulos</h3>
+                        <p>Resultado após a aplicação do método <strong>Listwise Deletion</strong>.</p>
+                        <div style="margin-top: 10px; border-left: 3px solid var(--green); padding-left: 10px;">
+                            <small style="color: var(--green); font-family: 'JetBrains Mono';">[OK] Dataset validado para ML.</small>
+                        </div>
+                    </div>
+                    <div class="visual"><div style="width: 85%; overflow: auto;">{{ null_after|safe }}</div></div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">5. Distribuição de Classes</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Balanceamento de Espécies</h3>
+                        <p>Distribuição volumétrica das classes alvo.</p>
+                    </div>
+                    <div class="visual"><img class="chart-img" data-type="barras" src="/chart/barras?tema=dark"></div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">6. Correlação de Atributos</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Mapeamento de Clusters</h3>
+                        <p>Análise bivariada entre bico e nadadeira.</p>
+                    </div>
+                    <div class="visual"><img class="chart-img" data-type="dispersao" src="/chart/dispersao?tema=dark"></div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">7. Engenharia de Atributos</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Transformações e Codificação</h3>
+                        <p>Execução do pipeline para compatibilidade algorítmica.</p>
+                    </div>
+                    <div class="pipeline">
+                        <div class="card"><h4>Limpeza</h4><p>Remoção de NaNs.</p></div>
+                        <div class="card"><h4>Encoding</h4><p>Labels numéricos.</p></div>
+                        <div class="card"><h4>Dummies</h4><p>Vetores binários.</p></div>
+                        <div class="card"><h4>Scaling</h4><p>Normalização.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="header"><h1 class="title">8. Análise de Multicolinearidade</h1></div>
+                <div class="content">
+                    <div class="text">
+                        <h3>Matriz de Correlação de Pearson</h3>
+                        <p>A análise revela que o <strong>Comprimento da Nadadeira (0.85)</strong> é o principal preditor.</p>
+                    </div>
+                    <div class="visual"><img class="chart-img" data-type="heatmap" src="/chart/heatmap?tema=dark"></div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; align-items:center;">
+                    <img src="/static/img/pinc.png" id="final-penguin" class="pin-logo" style="width: 140px; height: 140px; margin: 0 auto 20px auto;">
+                    <h1 class="title" style="font-size: 64px;">Pipeline Concluído</h1>
+                    <p style="font-size: 24px; color: var(--pink);">Model Insights & Closure</p>
+                </div>
+            </div>
+
+            <div id="console" class="terminal-console">
+                <div class="log-system">[SYSTEM] Console inicializado... OK</div>
+            </div>
+            <div class="controls">
+                <button id="pB" class="btn-main" onclick="move(-1)" disabled>Anterior</button>
+                <span id="txtP" style="font-weight:bold;">1 de 10</span>
+                <button id="nB" class="btn-main" onclick="move(1)">Próximo</button>
+            </div>
+        </div>
+
+        <div id="view-home" style="display:flex; flex:1; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding: 40px;">
+            <img src="/static/img/pinc.png" class="pin-logo" style="width:100px; height:100px; margin-bottom:20px;">
+            <h1 class="title" style="font-size: 48px; margin:0;">DataLens Dashboard</h1>
+            <p style="color: var(--pink); font-size: 20px; font-family: 'JetBrains Mono';">v1.5 // Inteligência de Dados & Automação</p>
+            <p style="max-width: 600px; line-height: 1.6; margin-top: 20px;">
+                Bem-vindo ao seu ecossistema de dados. Utilize o menu lateral para explorar a análise dos <strong>Palmer Penguins</strong> ou processe seus próprios arquivos na ferramenta de limpeza.
+            </p>
+        </div>
+
+        <div id="view-wiki" style="display:none; flex:1; flex-direction:column; padding:20px; overflow-y: auto;">
+    <div class="header" style="margin-bottom: 20px;">
+        <h1 class="title">Documentação de Variáveis</h1>
+    </div>
+    
+    <div class="content" style="display: block; width: 100%;">
+        <p style="margin-bottom: 25px; color: var(--comment); font-family: 'JetBrains Mono';">
+            // Metadados do Dataset Palmer Penguins
+        </p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="card" style="border: 1px solid var(--border-color); padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 4px solid var(--green);">
+                <h4 style="color: var(--green); margin-top: 0; font-family: 'JetBrains Mono';">species</h4>
+                <p style="font-size: 13px; line-height: 1.5;">Espécie alvo do pinguim: <strong>Adélie, Chinstrap ou Gentoo</strong>. No Machine Learning, esta é a nossa classe preditiva (Target).</p>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--border-color); padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 4px solid var(--pink);">
+                <h4 style="color: var(--pink); margin-top: 0; font-family: 'JetBrains Mono';">bill_length_mm</h4>
+                <p style="font-size: 13px; line-height: 1.5;">Comprimento do culmen (crista superior do bico). É uma medida crucial para diferenciar a dieta e o nicho ecológico.</p>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--border-color); padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 4px solid var(--yellow);">
+                <h4 style="color: var(--yellow); margin-top: 0; font-family: 'JetBrains Mono';">bill_depth_mm</h4>
+                <p style="font-size: 13px; line-height: 1.5;">Altura vertical do bico. Espécies como o Adélie tendem a ter bicos mais "altos" e curtos em comparação ao Gentoo.</p>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--border-color); padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 4px solid var(--cyan);">
+                <h4 style="color: var(--cyan); margin-top: 0; font-family: 'JetBrains Mono';">flipper_length_mm</h4>
+                <p style="font-size: 13px; line-height: 1.5;">Comprimento da nadadeira em milímetros. É o atributo com maior correlação positiva com o tamanho geral do corpo.</p>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--border-color); padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 4px solid var(--purple);">
+                <h4 style="color: var(--purple); margin-top: 0; font-family: 'JetBrains Mono';">body_mass_g</h4>
+                <p style="font-size: 13px; line-height: 1.5;">Massa corporal total em gramas. Essencial para análises de dimorfismo sexual e saúde da colônia.</p>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--border-color); padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; border-left: 4px solid var(--orange);">
+                <h4 style="color: var(--orange); margin-top: 0; font-family: 'JetBrains Mono';">island</h4>
+                <p style="font-size: 13px; line-height: 1.5;">Localização geográfica: <strong>Biscoe, Dream ou Torgersen</strong>. Indica a origem do exemplar coletado.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="view-limpeza" style="display:none; flex:1; flex-direction:column; padding:40px; justify-content:center; align-items:center;">
+            <div class="form-ui" style="max-width: 600px; width:100%; border: 2px dashed var(--green);">
+                <h2 style="color: var(--green); margin-top:0;">⚡ Sanitização de CSV</h2>
+                <p>Suba qualquer dataset bruto e o motor irá remover automaticamente todas as linhas com valores nulos (NaN).</p>
+                <form action="/limpar-dataset" method="post" enctype="multipart/form-data" style="margin-top:30px;">
+                    <input type="file" name="file" accept=".csv" id="file-csv" style="display:none;" onchange="document.getElementById('file-info').innerText = 'Pronto: ' + this.files[0].name">
+                    <label for="file-csv" class="btn-main" style="display:block; text-align:center; margin-bottom:10px; cursor:pointer;">
+                        📂 Selecionar Arquivo .CSV
+                    </label>
+                    <div id="file-info" style="font-size:12px; color:var(--cyan); margin-bottom:20px; text-align:center;">Aguardando arquivo...</div>
+                    <button type="submit" class="btn-main" style="background:var(--green); color:#282a36; width:100%;">Executar Limpeza e Baixar</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="view-dinamico" style="display:none; flex:1; flex-direction:column; padding:20px; overflow: hidden;">
+            <div class="header"><h1 class="title">Analisador Dinâmico</h1></div>
+            <div class="content">
+                <div class="text" style="flex:0.4;">
+                    <h3>Filtros de Pipeline</h3>
+                    <label>Métrica (Eixo Y):</label>
+                    <select id="sel-metrica" onchange="updateDinamico()">
+                        <option value="body_mass_g">Massa Corporal</option>
+                        <option value="flipper_length_mm">Comprimento da Nadadeira</option>
+                    </select>
+                    <label>Ilha:</label>
+                    <select id="sel-ilha" onchange="updateDinamico()">
+                        <option value="Todas">Todas</option>
+                        <option value="Biscoe">Biscoe</option>
+                        <option value="Dream">Dream</option>
+                        <option value="Torgersen">Torgersen</option>
+                    </select>
+                    <label>Sexo:</label>
+                    <select id="sel-sexo" onchange="updateDinamico()">
+                        <option value="Todos">Ambos</option>
+                        <option value="MALE">Macho</option>
+                        <option value="FEMALE">Fêmea</option>
+                    </select>
+                </div>
+                <div class="visual" style="flex:1.6;">
+                    <img id="img-dinamica" class="chart-img" src="/chart/dinamico?tema=dark">
+                </div>
+            </div>
+        </div>
+
+        <div id="view-predict" style="display:none; flex:1; justify-content:center; align-items:center;">
+            <div class="form-ui">
+                <h2 style="color: var(--pink);">🤖 Motor de Inferência</h2>
+                <input type="number" id="f" placeholder="Nadadeira (mm)">
+                <input type="number" id="b" placeholder="Bico (mm)">
+                <button class="btn-main" style="width:100%" onclick="pre()">Executar Predict</button>
+                <div id="res" style="margin-top:20px; font-weight:bold; font-size:18px; color:var(--pink);"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let idx = 0;
+        const slides = document.querySelectorAll('.slide');
+        const consoleElem = document.getElementById('console');
+
+        function addLog(message, type = 'info') {
+            const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+            const logDiv = document.createElement('div');
+            logDiv.className = `log-${type}`;
+            logDiv.innerHTML = `<span style="color: #6272a4;">${time}</span> [${type.toUpperCase()}] ${message}`;
+            consoleElem.appendChild(logDiv);
+            consoleElem.scrollTop = consoleElem.scrollHeight;
+        }
+
+        function tab(t) {
+    // 1. Adiciona 'view-wiki' na lista
+    const views = ['view-home', 'slides-wrapper', 'view-limpeza', 'view-dinamico', 'view-predict', 'view-mapa', 'view-wiki'];
+    views.forEach(v => {
+        const el = document.getElementById(v);
+        if(el) el.style.display = 'none';
+    });
+
+    const target = (t === 'slides') ? 'slides-wrapper' : `view-${t}`;
+    const targetEl = document.getElementById(target);
+    if(targetEl) targetEl.style.display = 'flex';
+
+    // 2. Mapeia o botão 'wiki' para 'nWiki'
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    const btnMap = { 
+        'home': 'nHome', 
+        'slides': 'nS', 
+        'limpeza': 'nL', 
+        'dinamico': 'nD', 
+        'predict': 'nP', 
+        'mapa': 'nMap',
+        'wiki': 'nWiki' 
+    };
+    
+    const activeBtn = document.getElementById(btnMap[t]);
+    if(activeBtn) activeBtn.classList.add('active');
+
+    if(t === 'dinamico') updateDinamico();
+    addLog(`Interface: Módulo ${t.toUpperCase()} carregado.`, 'info');
+}
+
+        function move(d) {
+            slides[idx].classList.remove('active');
+            idx += d;
+            slides[idx].classList.add('active');
+            document.getElementById('pB').disabled = idx === 0;
+            document.getElementById('nB').disabled = idx === slides.length - 1;
+            document.getElementById('txtP').innerText = `${idx + 1} de ${slides.length}`;
+            
+            const img = slides[idx].querySelector('.chart-img');
+            if (img) {
+                const tema = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                img.src = `/chart/${img.getAttribute('data-type')}?tema=${tema}&t=${Date.now()}`;
+            }
+            addLog(`Navegando: slide ${idx + 1}`, 'info');
+        }
+
+        function updateDinamico() {
+            const m = document.getElementById('sel-metrica').value;
+            const i = document.getElementById('sel-ilha').value;
+            const s = document.getElementById('sel-sexo').value;
+            const t = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+            document.getElementById('img-dinamica').src = `/chart/dinamico?metrica=${m}&ilha=${i}&sexo=${s}&tema=${t}&t=${Date.now()}`;
+        }
+
+        function toggleTheme() {
+    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
+    
+    // Ajuste do filtro do mapa no Slide 1
+    const mapImg = document.getElementById('map-img-slide');
+    if (mapImg) {
+        mapImg.style.filter = isLight 
+            ? "contrast(1.1) brightness(1.1) grayscale(0%) invert(0%)" // Normal
+            : "contrast(1.2) brightness(0.8) grayscale(100%) invert(100%)"; // Tático
+    }
+    
+    // Atualiza logs e ícones
+    addLog(`Interface alterada para modo ${isLight ? 'claro' : 'escuro'}`, 'system');
+}
+
+        async function pre() {
+            const f = document.getElementById('f').value;
+            const b = document.getElementById('b').value;
+            if(!f || !b) return;
+            const r = await fetch('/predict', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({flipper:f, bill_len:b})
+            });
+            const d = await r.json();
+            document.getElementById('res').innerHTML = `Resultado: ${d.especie}<br><small>${d.explica}</small>`;
+            addLog(`IA Predição: ${d.especie}`, 'model');
+        }
+    </script>
+</body>
+</html>

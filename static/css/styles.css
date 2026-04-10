@@ -1,0 +1,443 @@
+/* Configurações Globais e Fontes Estilo Terminal/Moderno */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap');
+
+*, *::before, *::after { 
+    box-sizing: border-box; 
+    transition: all 0.3s ease;
+}
+
+:root {
+    /* Dracula Dark Mode */
+    --bg-dark: #282a36;
+    --current-line: #44475a;
+    --foreground: #f8f8f2;
+    --comment: #6272a4;
+    --cyan: #8be9fd;
+    --green: #50fa7b;
+    --orange: #ffb86c;
+    --pink: #ff79c6;
+    --purple: #bd93f9;
+    --red: #ff5555;
+    --yellow: #f1fa8c;
+    
+    /* Variáveis Dinâmicas - Padrão Escuro */
+    --bg-main: var(--bg-dark);
+    --glass: rgba(40, 42, 54, 0.7);
+    --border-color: var(--current-line);
+    --text-main: var(--foreground);
+    --accent: var(--purple);
+    --bg-img: url('/static/img/bg.jpg');
+}
+
+/* Tema Claro (Dracula Refined Light) */
+body.light-mode {
+    --bg-main: #f8f8f2;
+    --glass: rgba(255, 255, 255, 0.6);
+    --border-color: #d1d1d1;
+    --text-main: #282a36; 
+    --accent: #6272a4;
+    --bg-img: url('/static/img/bgc.jpg');
+    
+    /* ADICIONE ESTA LINHA: */
+    --bg-card: #ffffff; /* Fundo branco para o container de sanitização */
+}
+
+/* Forçar contraste preto no tema claro para textos de leitura */
+body.light-mode p, 
+body.light-mode h1, 
+body.light-mode h2, 
+body.light-mode h3,
+body.light-mode .text p,
+body.light-mode .table-data td {
+    color: #000000 !important;
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+    background: var(--bg-main) var(--bg-img) no-repeat center center fixed;
+    background-size: cover; 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    overflow: hidden; 
+    color: var(--text-main);
+}
+
+/* Container com Glassmorphism */
+.container { 
+    background: var(--glass); 
+    backdrop-filter: blur(20px); 
+    -webkit-backdrop-filter: blur(20px);
+    width: 94vw; 
+    max-width: 1300px; 
+    height: 92vh; /* Aumentado levemente para acomodar o console */
+    border-radius: 12px; 
+    display: flex; 
+    flex-direction: column; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+}
+
+/* Navegação e Top Bar */
+/* Top Bar/Side Bar estilo Editor de Código */
+.nav-menu { 
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    display: flex; 
+    flex-direction: column; /* Alinha os botões um abaixo do outro */
+    gap: 10px; /* Espaço entre os botões */
+    z-index: 100; 
+}
+
+.nav-btn { 
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 16px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    text-transform: lowercase;
+    text-align: left; /* Alinha o texto à esquerda como em uma IDE */
+    width: 160px; /* Largura fixa para manter o alinhamento */
+}
+
+.nav-btn::before { content: "> "; }
+
+.nav-btn.active { 
+    background: var(--accent); 
+    color: var(--bg-dark); 
+    box-shadow: 0 0 15px var(--accent); 
+}
+
+.theme-toggle { 
+    position: absolute; 
+    top: 20px; 
+    right: 20px; 
+    z-index: 1000; 
+    background: var(--glass);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Conteúdo dos Slides */
+.slide { 
+    display: none; 
+    padding: 20px 50px; 
+    flex: 1; 
+    flex-direction: column; 
+    animation: terminalFade 0.4s ease-out;
+}
+
+.slide.active { display: flex; }
+
+.header { 
+    display: flex; 
+    align-items: center; 
+    border-bottom: 1px solid var(--border-color); 
+    padding-bottom: 10px; 
+    margin-bottom: 20px; 
+}
+
+.pin-logo { 
+    width: 50px; height: 50px; 
+    border-radius: 8px; 
+    border: 2px solid var(--accent);
+    padding: 2px;
+    filter: drop-shadow(0 0 5px var(--accent));
+    animation: flutuar 4s infinite ease-in-out;
+}
+
+.title { 
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem; 
+    color: var(--accent); 
+    margin: 0 0 0 20px; 
+}
+
+.content { 
+    display: flex; 
+    flex: 1; 
+    gap: 30px; 
+    align-items: flex-start; 
+}
+
+.text { 
+    flex: 0.8; 
+    background: rgba(0,0,0,0.2);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid var(--pink);
+}
+
+.text h3 { 
+    color: var(--cyan); 
+    margin-top: 0;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.text p { line-height: 1.6; font-size: 0.95rem; opacity: 0.9; }
+
+.visual { 
+    flex: 1.2; 
+    background: rgba(0,0,0,0.3); 
+    border-radius: 8px; 
+    height: 100%; 
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.chart-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Estilo das Tabelas */
+.table-data { 
+    width: 100%; 
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; 
+    border-collapse: collapse;
+}
+
+.table-data th { 
+    text-align: left; 
+    color: var(--green); 
+    border-bottom: 1px solid var(--accent);
+    padding: 10px;
+}
+
+.table-data td { padding: 8px; color: var(--foreground); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+/* Pipeline Cards */
+.pipeline { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px; 
+    width: 100%; 
+}
+
+.card { 
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.card h4 { color: var(--orange); margin: 0 0 10px 0; font-family: 'JetBrains Mono', monospace; }
+
+/* Console de Logs Estilo Terminal */
+.terminal-console {
+    background: #1e1e1e;
+    color: #50fa7b;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 10px 15px;
+    height: 100px;
+    overflow-y: auto;
+    border-top: 2px solid #44475a;
+    font-size: 0.75rem;
+    width: 100%;
+}
+
+.log-info { color: #8be9fd; }
+.log-model { color: #ff79c6; }
+.log-system { color: #bd93f9; }
+
+/* Controles Inferiores */
+.controls { 
+    background: var(--current-line); 
+    padding: 8px 40px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+
+.btn-main { 
+    background: var(--accent); 
+    color: var(--bg-dark); 
+    border: none; 
+    padding: 6px 20px; 
+    border-radius: 2px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    text-transform: uppercase;
+}
+
+.btn-main:hover { filter: brightness(1.2); }
+
+/* Form de IA */
+/* Isso fará com que o fundo mude automaticamente entre os temas */
+.form-ui, .card, .visual {
+    background-color: var(--bg-card, #343746) !important;
+    color: var(--text-main);
+    border: 2px dashed var(--green); /* Mantém sua borda tracejada verde */
+}
+
+input { 
+    background: var(--current-line); 
+    border: 1px solid var(--comment);
+    color: var(--green);
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Animações */
+@keyframes terminalFade { 
+    from { opacity: 0; transform: translateX(-10px); } 
+    to { opacity: 1; transform: translateX(0); } 
+}
+
+@keyframes flutuar { 
+    0%, 100% { transform: translateY(0); } 
+    50% { transform: translateY(-8px); } 
+}
+
+.btn-main:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 20px var(--green);
+}
+
+.btn-main::after {
+    content: " [v1.1]";
+    font-size: 0.6rem;
+    opacity: 0.5;
+}
+
+/* --- ESTILOS DA ABA DINÂMICA --- */
+
+/* Estilização dos Seletores (Dropdowns) */
+select {
+    background: var(--current-line);
+    border: 1px solid var(--accent);
+    color: var(--green);
+    padding: 10px;
+    width: 100%;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 15px;
+    appearance: none; /* Remove a seta padrão do navegador */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23bd93f9' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 12px) center;
+}
+
+select:hover {
+    border-color: var(--pink);
+    box-shadow: 0 0 8px rgba(255, 121, 198, 0.2);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--green);
+}
+
+/* Labels com estética de comentário de código */
+label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--comment);
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+label::before {
+    content: "# ";
+}
+
+/* Ajuste de layout para a aba de analisador */
+#view-dinamico .content {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}
+
+#view-dinamico .text {
+    border-left: 4px solid var(--green); /* Cor diferente para distinguir dos slides */
+}
+
+/* Efeito de scan exclusivo para o analisador */
+#view-dinamico .visual::after {
+    background: linear-gradient(to bottom, transparent, rgba(80, 250, 123, 0.1), transparent);
+}
+
+/* --- CORREÇÃO PARA O MOTOR DE INFERÊNCIA (MODO CLARO) --- */
+
+/* 1. Fundo do Container de Predição */
+body.light-mode #view-predict .form-ui {
+    background-color: #ffffff !important;
+    border: 2px dashed var(--pink) !important; /* Mantém o tracejado rosa */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* 2. Campos de Input (Nadadeira e Bico) */
+body.light-mode #view-predict input[type="number"] {
+    background-color: #ffffff !important;
+    color: #282a36 !important;
+    border: 1px solid #d1d9e6 !important;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+/* 3. Efeito de Foco nos Inputs */
+body.light-mode #view-predict input[type="number"]:focus {
+    outline: none;
+    border-color: var(--pink) !important;
+    box-shadow: 0 0 0 3px rgba(255, 121, 198, 0.2);
+}
+
+/* 4. Ajuste do texto do título e labels na predição */
+body.light-mode #view-predict h2 {
+    color: var(--pink) !important;
+}
+
+/* 5. Placeholder (aquele texto cinza de sugestão) */
+body.light-mode #view-predict input::placeholder {
+    color: #909bb2;
+}
+
+/* --- ESTILO PARA O SELECT (MODO CLARO) --- */
+body.light-mode #sel-metrica,
+body.light-mode #sel-ilha,
+body.light-mode #sel-sexo {
+    /* Fundo branco e texto escuro */
+    background-color: #ffffff !important;
+    color: #282a36 !important;
+    
+    /* Borda suave */
+    border: 1px solid #d1d9e6 !important;
+    
+    /* Remove aquele visual "pesado" do cinza */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236272a4' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: calc(100% - 12px) center !important;
+    appearance: none; /* Remove estilo padrão do sistema */
+    -webkit-appearance: none;
+    padding-right: 30px;
+}
+
+/* Efeito ao passar o mouse */
+body.light-mode #sel-metrica:hover {
+    border-color: #bd93f9 !important;
+    background-color: #f8f9fa !important;
+}
